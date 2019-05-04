@@ -41,7 +41,6 @@ namespace DependencyInjectionWorkshop.Models
 
             // Get Otp From Api
             var otpFromApi = "";
-            httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var response = httpClient.PostAsJsonAsync("api/otps", accountId).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -56,7 +55,6 @@ namespace DependencyInjectionWorkshop.Models
             if (dbPassword == hash.ToString() && otp == otpFromApi)
             {
                 // Verify success reset count
-                httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
                 var resetResponse = httpClient.PostAsJsonAsync("api/failedCounter/Reset", accountId).Result;
                 resetResponse.EnsureSuccessStatusCode();
 
@@ -64,7 +62,6 @@ namespace DependencyInjectionWorkshop.Models
             }
 
             // Verify failed count add 1
-            httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var addCounterResponse = httpClient.PostAsJsonAsync("api/failedCounter/Add", accountId).Result;
             addCounterResponse.EnsureSuccessStatusCode();
 
@@ -72,6 +69,14 @@ namespace DependencyInjectionWorkshop.Models
             var message = $"accountId:{accountId} verify failed.";
             var slackClient = new SlackClient("my api token");
             slackClient.PostMessage(r => { }, "my channel", message, "my bot name");
+
+            // 取得失敗次數，並用 NLog 記錄 log 資訊。
+            var lockedCountResponse = httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", accountId).Result;
+            lockedCountResponse.EnsureSuccessStatusCode();
+            var lockedCount = lockedCountResponse.Content.ReadAsAsync<int>().Result;
+
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info($"Verify Failed. AccountId: {accountId}, Failed Times: {lockedCount}");
 
             return false;
         }
