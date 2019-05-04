@@ -32,7 +32,7 @@ namespace DependencyInjectionWorkshop.Models
 
             // Get Otp From Api
             var otpFromApi = "";
-            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
+            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var response = httpClient.PostAsJsonAsync("api/otps", accountId).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -46,8 +46,18 @@ namespace DependencyInjectionWorkshop.Models
             // 比對 hash password & otp
             if (dbPassword == hash.ToString() && otp == otpFromApi)
             {
+                // Verify success reset count
+                httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
+                var resetResponse = httpClient.PostAsJsonAsync("api/failedCounter/Reset", accountId).Result;
+                resetResponse.EnsureSuccessStatusCode();
+
                 return true;
             }
+
+            // Verify failed count add 1
+            httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
+            var addCounterResponse = httpClient.PostAsJsonAsync("api/failedCounter/Add", accountId).Result;
+            addCounterResponse.EnsureSuccessStatusCode();
 
             // 比對失敗用 Slack 通知使用者
             var message = $"accountId:{accountId} verify failed.";
