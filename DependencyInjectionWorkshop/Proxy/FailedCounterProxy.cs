@@ -3,23 +3,30 @@ using System.Net.Http;
 
 namespace DependencyInjectionWorkshop.Proxy
 {
-    public class FailedCounterProxy
+    public interface IFailedCounter
     {
-        public void ResetFailedCounter(string accountId)
+        void Reset(string accountId);
+        void Add(string accountId);
+        int Get(string accountId);
+    }
+
+    public class FailedCounterProxy : IFailedCounter
+    {
+        public void Reset(string accountId)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var resetResponse = httpClient.PostAsJsonAsync("api/failedCounter/Reset", accountId).Result;
             resetResponse.EnsureSuccessStatusCode();
         }
 
-        public void AddFailedCount(string accountId)
+        public void Add(string accountId)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var addCounterResponse = httpClient.PostAsJsonAsync("api/failedCounter/Add", accountId).Result;
             addCounterResponse.EnsureSuccessStatusCode();
         }
 
-        public int GetFailedCount(string accountId)
+        public int Get(string accountId)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var lockedCountResponse = httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", accountId).Result;

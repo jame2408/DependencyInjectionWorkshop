@@ -8,9 +8,15 @@ using DependencyInjectionWorkshop.Models;
 
 namespace DependencyInjectionWorkshop.Repo
 {
-    public class ProfileRepo
+    public interface IProfile
     {
-        public string GetPasswordFromDb(string accountId)
+        string GetProfile(string accountId);
+        void CheckAccountIsLocked(string accountId);
+    }
+
+    public class ProfileRepo : IProfile
+    {
+        public string GetProfile(string accountId)
         {
             var dbPassword = "";
             using (var connection = new SqlConnection("my connection string"))
