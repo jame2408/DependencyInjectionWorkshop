@@ -5,9 +5,10 @@ namespace DependencyInjectionWorkshop.Proxy
 {
     public class OtpServiceProxy
     {
-        public string GetCurrentOpt(string accountId, HttpClient httpClient)
+        public string GetCurrentOpt(string accountId)
         {
             var otpFromApi = "";
+            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
             var response = httpClient.PostAsJsonAsync("api/otps", accountId).Result;
             if (response.IsSuccessStatusCode)
             {

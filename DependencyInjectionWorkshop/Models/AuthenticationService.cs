@@ -2,7 +2,6 @@
 using DependencyInjectionWorkshop.Proxy;
 using DependencyInjectionWorkshop.Repo;
 using System;
-using System.Net.Http;
 
 namespace DependencyInjectionWorkshop.Models
 {
@@ -27,7 +26,7 @@ namespace DependencyInjectionWorkshop.Models
             var hashedPassword = _sha256Adapter.GetHashedPassword(password);
 
             // Get Otp From Api
-            var currentOpt = _otpServiceProxy.GetCurrentOpt(accountId, new HttpClient() { BaseAddress = new Uri("http://joey.dev/") });
+            var currentOpt = _otpServiceProxy.GetCurrentOpt(accountId);
 
             // 比對 hash password & otp
             if (passwordFromDb == hashedPassword.ToString() && otp == currentOpt)
