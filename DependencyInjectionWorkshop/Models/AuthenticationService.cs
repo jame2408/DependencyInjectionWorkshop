@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SlackAPI;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -47,6 +48,11 @@ namespace DependencyInjectionWorkshop.Models
             {
                 return true;
             }
+
+            // 比對失敗用 Slack 通知使用者
+            var message = $"accountId:{accountId} verify failed.";
+            var slackClient = new SlackClient("my api token");
+            slackClient.PostMessage(r => { }, "my channel", message, "my bot name");
 
             return false;
         }
