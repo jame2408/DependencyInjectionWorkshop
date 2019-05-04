@@ -10,13 +10,13 @@ namespace DependencyInjectionWorkshop.Repo
 {
     public interface IProfile
     {
-        string GetProfile(string accountId);
+        string GetPassword(string accountId);
         void CheckAccountIsLocked(string accountId);
     }
 
     public class ProfileRepo : IProfile
     {
-        public string GetProfile(string accountId)
+        public string GetPassword(string accountId)
         {
             var dbPassword = "";
             using (var connection = new SqlConnection("my connection string"))

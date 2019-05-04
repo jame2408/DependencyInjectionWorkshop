@@ -3,14 +3,14 @@ using System.Net.Http;
 
 namespace DependencyInjectionWorkshop.Proxy
 {
-    public interface IOpt
+    public interface IOtp
     {
-        string GetCurrentOpt(string accountId);
+        string GetCurrentOtp(string accountId);
     }
 
-    public class OtpServiceProxy : IOpt
+    public class OtpServiceProxy : IOtp
     {
-        public string GetCurrentOpt(string accountId)
+        public string GetCurrentOtp(string accountId)
         {
             var otpFromApi = "";
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
