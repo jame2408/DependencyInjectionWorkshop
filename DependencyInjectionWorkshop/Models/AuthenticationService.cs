@@ -37,7 +37,10 @@ namespace DependencyInjectionWorkshop.Models
         public bool Verify(string accountId, string password, string otp)
         {
             // if locked, return.
-            _profile.CheckAccountIsLocked(accountId);
+            if (_failedCounter.CheckAccountIsLocked(accountId))
+            {
+                throw new FailedTooManyTimesException();
+            }
 
             // Get DB Hash Password Using SP
             var passwordFromDb = _profile.GetPassword(accountId);
@@ -62,10 +65,10 @@ namespace DependencyInjectionWorkshop.Models
 
             // 取得失敗次數，並用 NLog 記錄 log 資訊。
             var failedCount = _failedCounter.Get(accountId);
-            _logger.Info(accountId, failedCount);
+            _logger.Info($"Verify Failed. AccountId: {accountId}, Failed Times: {failedCount}");
 
             // 比對失敗用 Slack 通知使用者
-            _notification.PushNotify(accountId, $"accountId:{accountId} verify failed.");
+            _notification.PushMessage(accountId, $"accountId:{accountId} verify failed.");
 
             return false;
         }

@@ -11,7 +11,6 @@ namespace DependencyInjectionWorkshop.Repo
     public interface IProfile
     {
         string GetPassword(string accountId);
-        void CheckAccountIsLocked(string accountId);
     }
 
     public class ProfileRepo : IProfile
@@ -26,17 +25,6 @@ namespace DependencyInjectionWorkshop.Repo
             }
 
             return dbPassword;
-        }
-
-        public void CheckAccountIsLocked(string accountId)
-        {
-            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
-            var isLockedResponse = httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", accountId).Result;
-            isLockedResponse.EnsureSuccessStatusCode();
-            if (isLockedResponse.Content.ReadAsAsync<bool>().Result)
-            {
-                throw new FailedTooManyTimesException();
-            }
         }
     }
 }

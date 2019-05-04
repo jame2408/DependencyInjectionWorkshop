@@ -2,15 +2,15 @@
 {
     public interface ILogger
     {
-        void Info(string accountId, int failedCount);
+        void Info(string message);
     }
 
     public class LogAdapter : ILogger
     {
-        public void Info(string accountId, int failedCount)
+        public void Info(string message)
         {
             var logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Info($"Verify Failed. AccountId: {accountId}, Failed Times: {failedCount}");
+            logger.Info(message);
         }
     }
 }

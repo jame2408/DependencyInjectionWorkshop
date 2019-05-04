@@ -6,8 +6,12 @@ namespace DependencyInjectionWorkshop.Proxy
     public interface IFailedCounter
     {
         void Reset(string accountId);
+
         void Add(string accountId);
+
         int Get(string accountId);
+
+        bool CheckAccountIsLocked(string accountId);
     }
 
     public class FailedCounterProxy : IFailedCounter
@@ -34,5 +38,15 @@ namespace DependencyInjectionWorkshop.Proxy
             var lockedCount = lockedCountResponse.Content.ReadAsAsync<int>().Result;
             return lockedCount;
         }
+
+        public bool CheckAccountIsLocked(string accountId)
+        {
+            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.dev/") };
+            var isLockedResponse = httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", accountId).Result;
+            isLockedResponse.EnsureSuccessStatusCode();
+            var result = isLockedResponse.Content.ReadAsAsync<bool>().Result;
+            return result;
+        }
+
     }
 }
