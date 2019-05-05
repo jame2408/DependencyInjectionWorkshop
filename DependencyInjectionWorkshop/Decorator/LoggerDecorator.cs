@@ -4,15 +4,13 @@ using DependencyInjectionWorkshop.Proxy;
 
 namespace DependencyInjectionWorkshop.Decorator
 {
-    public class LoggerDecorator : IAuthentication
+    public class LoggerDecorator : AuthenticationBaseDecorator
     {
-        private readonly IAuthentication _authentication;
         private readonly ILogger _logger;
         private readonly IFailedCounter _failedCounter;
 
-        public LoggerDecorator(IAuthentication authenticationService, ILogger logger, IFailedCounter failedCounter)
+        public LoggerDecorator(IAuthentication authenticationService, ILogger logger, IFailedCounter failedCounter) : base(authenticationService)
         {
-            _authentication = authenticationService;
             _logger = logger;
             _failedCounter = failedCounter;
         }
@@ -23,9 +21,9 @@ namespace DependencyInjectionWorkshop.Decorator
             _logger.Info($"Verify Failed. AccountId: {accountId}, Failed Times: {failedCount}");
         }
 
-        public bool Verify(string accountId, string password, string otp)
+        public override bool Verify(string accountId, string password, string otp)
         {
-            var isValid = _authentication.Verify(accountId, password, otp);
+            var isValid = base.Verify(accountId, password, otp);
             if (!isValid)
             {
                 LogVerify(accountId);
