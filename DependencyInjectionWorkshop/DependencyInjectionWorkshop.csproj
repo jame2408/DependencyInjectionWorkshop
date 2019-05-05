@@ -78,6 +78,7 @@
     <Compile Include="Adapters\LogAdapter.cs" />
     <Compile Include="Adapters\NotifyAdapter.cs" />
     <Compile Include="Adapters\Sha256Adapter.cs" />
+    <Compile Include="Decorator\AuthenticationBaseDecorator.cs" />
     <Compile Include="Decorator\FailedCounterDecorator.cs" />
     <Compile Include="Decorator\LoggerDecorator.cs" />
     <Compile Include="Decorator\NotificationDecorator.cs" />
