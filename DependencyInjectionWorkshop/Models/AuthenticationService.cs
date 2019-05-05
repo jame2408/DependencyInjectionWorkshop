@@ -5,23 +5,26 @@ using System;
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public class AuthenticationService
+    public interface IAuthentication
+    {
+        bool Verify(string accountId, string password, string otp);
+    }
+
+    public class AuthenticationService : IAuthentication
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
         private readonly IOtp _otpService;
         private readonly IFailedCounter _failedCounter;
         private readonly ILogger _logger;
-        private readonly INotification _notification;
 
-        public AuthenticationService(IProfile profileRepo, IHash sha256Adapter, IOtp otpServiceProxy, IFailedCounter failedCounterProxy, ILogger logAdapter, INotification notifyAdapter)
+        public AuthenticationService(IProfile profileRepo, IHash sha256Adapter, IOtp otpServiceProxy, IFailedCounter failedCounterProxy, ILogger logAdapter)
         {
             _profile = profileRepo;
             _hash = sha256Adapter;
             _otpService = otpServiceProxy;
             _failedCounter = failedCounterProxy;
             _logger = logAdapter;
-            _notification = notifyAdapter;
         }
 
         //public AuthenticationService()
@@ -68,7 +71,7 @@ namespace DependencyInjectionWorkshop.Models
             _logger.Info($"Verify Failed. AccountId: {accountId}, Failed Times: {failedCount}");
 
             // 比對失敗用 Slack 通知使用者
-            _notification.PushMessage(accountId, $"accountId:{accountId} verify failed.");
+            //_notificationDecorator.NotificationVerify(accountId);
 
             return false;
         }
